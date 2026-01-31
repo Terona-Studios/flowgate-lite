@@ -1,0 +1,104 @@
+###########################
+# ███████╗██╗░░░░░░█████╗░░██╗░░░░░░░██╗░██████╗░░█████╗░████████╗███████╗
+# ██╔════╝██║░░░░░██╔══██╗░██║░░██╗░░██║██╔════╝░██╔══██╗╚══██╔══╝██╔════╝
+# █████╗░░██║░░░░░██║░░██║░╚██╗████╗██╔╝██║░░██╗░███████║░░░██║░░░█████╗░░
+# ██╔══╝░░██║░░░░░██║░░██║░░████╔═████║░██║░░╚██╗██╔══██║░░░██║░░░██╔══╝░░
+# ██║░░░░░███████╗╚█████╔╝░░╚██╔╝░╚██╔╝░╚██████╔╝██║░░██║░░░██║░░░███████╗
+# ╚═╝░░░░░╚══════╝░╚════╝░░░░╚═╝░░░╚═╝░░░╚═════╝░╚═╝░░╚═╝░░░╚═╝░░░╚══════╝
+# █░░ █ ▀█▀ █▀▀
+# █▄▄ █ ░█░ ██▄
+###########################
+# Messages
+#
+# Plugin: FlowGate-Lite
+# Author: Terona Studios
+# Version: 1.0
+#
+# This file controls:
+# - Titles shown in fallback server
+# - Command messages
+# - Queue messages
+# - Slash server feedback
+#
+# Color codes:
+# Use '&' for colors (e.g. &a, &c, &7)
+###########################
+
+
+# ==================================================
+# GLOBAL PREFIX
+# ==================================================
+# This prefix is added before most plugin messages.
+# Leave empty ("") to disable prefix.
+
+prefix: "&b[&aFlowGate&b]"
+
+# ==================================================
+# TITLES (FALLBACK SERVER)
+# ==================================================
+# Titles shown while the player is waiting
+# in the fallback server (limbo).
+
+titles:
+  waiting:
+    # Main title text
+    title: "&cWaiting"
+    # Animated subtitle text.
+    # The plugin will cycle through these lines.
+    animation:
+      - "&f."
+      - "&f.."
+      - "&f..."
+      - "&f.."
+      - "&f."
+
+# ==================================================
+# COMMAND MESSAGES
+# ==================================================
+# Messages related to FlowGate commands.
+
+commands:
+  # Shown when command usage is incorrect
+  usage: "&7Usage: &f/flowgate reload"
+  reload: "&aAll files have been successfully reloaded! &7(Restart the proxy server if all changes are not applied)"
+  unknown: "&cUnknown command. Did you think &f/flowgate reload&c?"
+
+# ==================================================
+# SERVER IDENTIFIERS
+# ==================================================
+# Internal server identifiers used by the plugin.
+# These must match server names in your proxy config.
+
+servers:
+  fallback: "limbo-wait"
+
+# ==================================================
+# FALLBACK
+# ==================================================
+
+fallback:
+  connecting: "&eAll Hubs are offline. Sending you to fallback..."
+
+# ==================================================
+# ROUTING
+# ==================================================
+routing:
+  # Shown while checking hubs
+  searching: "&eSearching for an available hub..."
+  # Shown when a hub passes ping check
+  found: "&aHub found! Connecting..."
+  # Shown if no hubs respond
+  no-hubs: "&cNo hubs are currently available."
+
+# ==================================================
+# SLASH SERVER MESSAGES
+# ==================================================
+# Messages shown when using slash server commands
+# (e.g. /anarchy).
+
+slash-server:
+  not-exist: "&cThat server does not exist."
+  connecting: "&aConnecting you to &f{server}&a..."
+  unavailable: "&cThat server is currently unavailable."
+  fallback: "&eAll hubs are offline. Sending you to fallback server..."
+  no-permission: "&cYou do not have permission to use this command."

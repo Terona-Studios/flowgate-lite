@@ -1,0 +1,155 @@
+###########################
+# ███████╗██╗░░░░░░█████╗░░██╗░░░░░░░██╗░██████╗░░█████╗░████████╗███████╗
+# ██╔════╝██║░░░░░██╔══██╗░██║░░██╗░░██║██╔════╝░██╔══██╗╚══██╔══╝██╔════╝
+# █████╗░░██║░░░░░██║░░██║░╚██╗████╗██╔╝██║░░██╗░███████║░░░██║░░░█████╗░░
+# ██╔══╝░░██║░░░░░██║░░██║░░████╔═████║░██║░░╚██╗██╔══██║░░░██║░░░██╔══╝░░
+# ██║░░░░░███████╗╚█████╔╝░░╚██╔╝░╚██╔╝░╚██████╔╝██║░░██║░░░██║░░░███████╗
+# ╚═╝░░░░░╚══════╝░╚════╝░░░░╚═╝░░░╚═╝░░░╚═════╝░╚═╝░░╚═╝░░░╚═╝░░░╚══════╝
+# █░░ █ ▀█▀ █▀▀
+# █▄▄ █ ░█░ ██▄
+###########################
+# Config
+#
+# Plugin: FlowGate-Lite
+# Author: Terona Studios
+# Version: 1.0
+#
+# This plugin handles:
+# - Smart hub routing & balancing
+# - Fallback server when no hub is available
+# - Clean network entry flow
+# - "enabled: true/false" Enables or Disables the feature
+###########################
+# IMPORTANT:
+# Some changes (servers, priorities, hub list, fallback server)
+# require a FULL PROXY RESTART to apply correctly.
+# /flowgate reload reloads most of the plugin configurations.
+# Hub and fallback servers MUST exist in your proxy config
+# and SHOULD be present in listener priorities.
+# Missing priorities may cause kicks or unexpected behavior.
+
+debug:
+  enabled: false
+
+# This feature only works when you are in the FallBack server
+titles:
+  enabled: true
+
+# ==================================================
+# HUB SERVERS
+# ==================================================
+# List of hub servers used by the network.
+# The plugin will automatically pick the best hub
+# (lowest player count) when a player joins.
+# These server names MUST exist in your proxy config.
+
+hubs:
+  - hub1
+  - hub2
+
+# ==================================================
+# HUB COMMANDS (MAX 3)
+# ==================================================
+# Commands that send players to a HUB.
+# Example:
+#   /hub
+#   /lobby
+#   /hubserver
+#
+# These commands:
+# - Send to a hub if ANY hub is available
+# - Send to fallback ONLY if ALL hubs are offline
+#
+# MAX 3 commands allowed.
+# Extras are ignored with warnings.
+
+hub-commands:
+  - hub
+
+# ==================================================
+# ROUTING
+# ==================================================
+# This controls whether FlowGate is allowed to
+# AUTOMATICALLY move players between servers.
+#
+# Routing includes:
+# - Moving players from the fallback server to a hub
+#   when a hub becomes available
+# - Runtime recovery when a hub crashes or restarts
+#
+# Routing does NOT affect:
+# - Proxy join priorities
+# - Manual commands (/hub, /lobby, /server, etc.)
+# - Slash servers (/anarchy, /dev)
+#
+# IMPORTANT:
+# - If routing is disabled, players may stay in the
+#   fallback server until they manually reconnect
+# - Fallback server may still be reachable via proxy
+#   priorities (this is normal proxy behavior)
+#
+# Recommended:
+# - Keep this ENABLED in production
+# - Disable only for maintenance or debugging
+
+routing:
+  enabled: true
+
+# ==================================================
+# FALLBACK SERVER (LIMBO / WAITING SERVER)
+# ==================================================
+# Used ONLY when no hub server is available.
+# Players will be sent here if all hubs are offline
+# or full (depending on configuration).
+
+fallback:
+  # Server name of the fallback server
+  # NOTE:
+  enabled: true
+  fallback-server: limbo-wait
+
+# ==================================================
+# PLAYER & HUB LIMIT SETTINGS
+# ==================================================
+# Controls how players are distributed across hubs.
+
+players:
+  enabled: true
+  # Absolute maximum players allowed on a hub
+  # If reached, players will not be sent there
+  hub-max-players: 100
+  # Preferred limit for balancing
+  # Plugin will try to avoid hubs above this count
+  hub-soft-limit: 80
+
+# ==================================================
+# ROUTING CHECK INTERVAL
+# ==================================================
+# How often (in seconds) the plugin checks:
+# - if a hub became available
+# - if queued players can be moved
+
+check-interval-seconds: 5
+
+# ==================================================
+# SLASH SERVERS
+# ==================================================
+# Defines custom commands that send players
+# to specific servers (e.g. /anarchy instead of /server anarchy).
+#
+# Format:
+# command: target-server
+
+slash-servers:
+  anarchy: anarchy
+  dev: dev
+
+# ==================================================
+# SERVER DISPLAY NAMES
+# ==================================================
+# Friendly names used in messages and queue text.
+# This does NOT affect server routing, only display.
+
+server-names:
+  anarchy: "Anarchy"
+  dev: "Dev Server"

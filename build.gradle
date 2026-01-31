@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+}
+
+group = 'si.terona'
+version = '1.0.2'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+repositories {
+    mavenCentral()
+
+    maven {
+        name = "md5-repo"
+        url = "https://repo.md-5.net/content/repositories/releases/"
+    }
+
+    maven {
+        name = "sonatype"
+        url = "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+
+    maven {
+        name = "minecraft-libraries"
+        url = "https://libraries.minecraft.net/"
+    }
+}
+
+dependencies {
+    compileOnly 'net.md-5:bungeecord-api:1.21-R0.4'
+}
+
+jar {
+    archiveBaseName.set("FlowGate-Lite")
+    archiveVersion.set(project.version.toString())
+}

@@ -1,0 +1,74 @@
+###########################
+# ███████╗██╗░░░░░░█████╗░░██╗░░░░░░░██╗░██████╗░░█████╗░████████╗███████╗
+# ██╔════╝██║░░░░░██╔══██╗░██║░░██╗░░██║██╔════╝░██╔══██╗╚══██╔══╝██╔════╝
+# █████╗░░██║░░░░░██║░░██║░╚██╗████╗██╔╝██║░░██╗░███████║░░░██║░░░█████╗░░
+# ██╔══╝░░██║░░░░░██║░░██║░░████╔═████║░██║░░╚██╗██╔══██║░░░██║░░░██╔══╝░░
+# ██║░░░░░███████╗╚█████╔╝░░╚██╔╝░╚██╔╝░╚██████╔╝██║░░██║░░░██║░░░███████╗
+# ╚═╝░░░░░╚══════╝░╚════╝░░░░╚═╝░░░╚═╝░░░╚═════╝░╚═╝░░╚═╝░░░╚═╝░░░╚══════╝
+# █░░ █ ▀█▀ █▀▀
+# █▄▄ █ ░█░ ██▄
+###########################
+# Motd
+#
+# Plugin: FlowGate-Lite
+# Author: Terona Studios
+# Version: 1.0
+#
+# This file controls:
+# - Server MOTD shown in the multiplayer server list
+# - Hover text when a player hovers over the server
+# - Different MOTD profiles (e.g. main, maintenance)
+#
+# Supports:
+# - Legacy colors (&a, &c, &l, etc.)
+# - HEX colors &#000000
+###########################
+
+
+# ==================================================
+# ACTIVE MOTD
+# ==================================================
+# Defines which MOTD profile is currently active.
+#
+# Possible values are keys under "motds".
+
+motd: example
+
+# ==================================================
+# MOTD PROFILES
+# ==================================================
+# You can define multiple MOTD profiles here
+# and switch between them by changing the "motd" value above.
+
+motds:
+
+  # --------------------------------------------------
+  # MOTD EXAMPLE
+  # --------------------------------------------------
+  example:
+    # Lines shown in the server list.
+    # Maximum of 2 lines are displayed by Minecraft.
+    lines:
+      - "&#ff4a65&lTerona Network &8• &#00ff221.21.10"
+      - "&8» &dThe legendary era will return soon..."
+    # Enable or Disable hover text for this MOTD
+    enable-hover: true
+    # Hover text shown when the player hovers
+    # over the server in the multiplayer list.
+    hover:
+      - "&7Powered by:"
+      - "&6Terona Studios"
+      - "&9"
+      - "&7Secured By:"
+      - "&fMILK AntiCheat"
+
+  maintenance:
+    enable-hover: true
+    lines:
+      - "<#ff4a65>&l          Terona Network &8• <#00ff22>1.21.10"
+      - "&c       Server is currently in maintenance"
+    hover:
+      - "&cServer offline"
+      - "&7Check Discord for updates"
+      - ""
+      - "&9&nhttps://terona.org/discord&r"

@@ -1,0 +1,4 @@
+name: FlowGate
+version: 1.0.2
+main: si.terona.flowgate.FlowGate
+author: Terona Studios

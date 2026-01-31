@@ -107,19 +107,6 @@ and production setups that value stability over complexity.
 
 ---
 
-## 🏗️ Status
-
-**FlowGate Lite v1.0.2**  
-Fully operational and production-ready.
-
-Future updates will focus on:
-- refinement
-- optional addons
-- performance tuning  
-without breaking the core design philosophy.
-
----
-
 ## 🧠 Developed By
 
 **Terona Studios**  

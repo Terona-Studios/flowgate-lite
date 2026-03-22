@@ -27,6 +27,7 @@ public final class FallbackListener implements Listener {
 
         if (!plugin.getConfig().getBoolean("fallback.enabled", true)) return;
 
+        ServerInfo kickedFrom = event.getKickedFrom();
         ServerInfo fallback = HubUtil.getFallback(plugin);
         if (fallback == null) return;
 
@@ -36,7 +37,25 @@ public final class FallbackListener implements Listener {
             return;
         }
 
-        // HARD OVERRIDE Bungee's disconnect
+        // Check if kicked from a hub or non-hub/non-fallback server
+        boolean isHub = HubUtil.isHub(plugin, kickedFrom);
+        boolean isFallback = kickedFrom != null &&
+                kickedFrom.getName().equalsIgnoreCase(fallback.getName());
+
+        // If any hub is online, try to send to best available hub
+        if (HubUtil.isAnyHubOnline(plugin)) {
+            ServerInfo bestHub = HubUtil.getBestAvailableHub(plugin, player);
+            if (bestHub != null) {
+                event.setCancelled(true);
+                event.setCancelServer(bestHub);
+                event.setKickReasonComponent(new net.md_5.bungee.api.chat.BaseComponent[]{
+                        new net.md_5.bungee.api.chat.TextComponent("")
+                });
+                return;
+            }
+        }
+
+        // No hubs available - send to fallback
         event.setCancelled(true);
         event.setCancelServer(fallback);
 
@@ -45,7 +64,7 @@ public final class FallbackListener implements Listener {
                 new net.md_5.bungee.api.chat.TextComponent("")
         });
 
-        // Mark player as searching BEFORE transfer
+        // Mark player as searching BEFORE transfer so scheduler picks them up
         plugin.getSearchingPlayers().add(player.getUniqueId());
     }
 }

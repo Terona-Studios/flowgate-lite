@@ -82,6 +82,7 @@ public final class FlowGate extends Plugin {
         // listeners
         getProxy().registerChannel("BungeeCord");
         getProxy().getPluginManager().registerListener(this, new FallbackListener(this));
+        getProxy().getPluginManager().registerListener(this, new ServerConnectBlockerListener(this));
         getProxy().getPluginManager().registerListener(this, new PluginMessageListener());
         router = new LimboRouterListener(this);
         getProxy().getPluginManager().registerListener(this, router);
@@ -168,7 +169,6 @@ public final class FlowGate extends Plugin {
                         }
 
                         router.attemptRoute(player);
-                        sendMessage(player, "routing.searching");
                     }
 
                 },
@@ -617,7 +617,7 @@ public final class FlowGate extends Plugin {
         return true;
     }
 
-    protected void sendMessage(ProxiedPlayer player, String path) {
+    public void sendMessage(ProxiedPlayer player, String path) {
         if (messages == null) return;
 
         String prefix = messages.getString("prefix", "");

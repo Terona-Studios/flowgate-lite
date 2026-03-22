@@ -32,8 +32,13 @@ public final class ServerConnectBlockerListener implements Listener {
 
         if (player == null || target == null) return;
 
-        if (HubUtil.isAnyHubOnline(plugin)) return;
-
-        event.setCancelled(true);
+        // If no hubs are online, send to fallback instead
+        if (!HubUtil.isAnyHubOnline(plugin)) {
+            ServerInfo fallback = HubUtil.getFallback(plugin);
+            if (fallback != null) {
+                event.setTarget(fallback);
+                plugin.getSearchingPlayers().add(player.getUniqueId());
+            }
+        }
     }
 }

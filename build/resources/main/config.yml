@@ -12,7 +12,7 @@
 #
 # Plugin: FlowGate-Lite
 # Author: Terona Studios
-# Version: 1.0
+# Version: 1.0.3
 #
 # This plugin handles:
 # - Smart hub routing & balancing
@@ -44,8 +44,9 @@ titles:
 # These server names MUST exist in your proxy config.
 
 hubs:
-  - hub1
-  - hub2
+  - servername1
+  - servername2
+  - servername3
 
 # ==================================================
 # HUB COMMANDS (MAX 3)
@@ -106,7 +107,7 @@ fallback:
   # Server name of the fallback server
   # NOTE:
   enabled: true
-  fallback-server: limbo-wait
+  fallback-server: servername
 
 # ==================================================
 # PLAYER & HUB LIMIT SETTINGS
@@ -120,7 +121,7 @@ players:
   hub-max-players: 100
   # Preferred limit for balancing
   # Plugin will try to avoid hubs above this count
-  hub-soft-limit: 80
+  hub-soft-limit: 1
 
 # ==================================================
 # ROUTING CHECK INTERVAL
@@ -141,8 +142,8 @@ check-interval-seconds: 5
 # command: target-server
 
 slash-servers:
-  anarchy: anarchy
-  dev: dev
+  servername: serverame
+  servername2: servername2
 
 # ==================================================
 # SERVER DISPLAY NAMES
@@ -151,5 +152,5 @@ slash-servers:
 # This does NOT affect server routing, only display.
 
 server-names:
-  anarchy: "Anarchy"
-  dev: "Dev Server"
+  servername: serverame
+  servername2: servername2

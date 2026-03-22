@@ -12,7 +12,7 @@
 #
 # Plugin: FlowGate-Lite
 # Author: Terona Studios
-# Version: 1.0
+# Version: 1.0.3
 #
 # This file controls:
 # - Server MOTD shown in the multiplayer server list
@@ -49,26 +49,20 @@ motds:
     # Lines shown in the server list.
     # Maximum of 2 lines are displayed by Minecraft.
     lines:
-      - "&#ff4a65&lTerona Network &8• &#00ff221.21.10"
-      - "&8» &dThe legendary era will return soon..."
+      - "&cLine 1"
+      - "&fLine 2"
     # Enable or Disable hover text for this MOTD
     enable-hover: true
     # Hover text shown when the player hovers
     # over the server in the multiplayer list.
     hover:
-      - "&7Powered by:"
-      - "&6Terona Studios"
-      - "&9"
-      - "&7Secured By:"
-      - "&fMILK AntiCheat"
+      - "&cMy Hover"
 
   maintenance:
     enable-hover: true
     lines:
-      - "<#ff4a65>&l          Terona Network &8• <#00ff22>1.21.10"
-      - "&c       Server is currently in maintenance"
+      - "&fLine 1"
+      - "&cServer is currently in maintenance"
     hover:
       - "&cServer offline"
-      - "&7Check Discord for updates"
-      - ""
-      - "&9&nhttps://terona.org/discord&r"
+      - "&7Check Discord for updates!"

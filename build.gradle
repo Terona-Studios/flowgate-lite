@@ -3,7 +3,7 @@ plugins {
 }
 
 group = 'si.terona'
-version = '1.0.2'
+version = '1.0.4'
 
 java {
     toolchain {

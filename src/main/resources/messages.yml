@@ -12,7 +12,7 @@
 #
 # Plugin: FlowGate-Lite
 # Author: Terona Studios
-# Version: 1.0
+# Version: 1.0.3
 #
 # This file controls:
 # - Titles shown in fallback server
@@ -70,7 +70,7 @@ commands:
 # These must match server names in your proxy config.
 
 servers:
-  fallback: "limbo-wait"
+  fallback: "servername"
 
 # ==================================================
 # FALLBACK

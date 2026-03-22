@@ -15,6 +15,7 @@ import si.terona.flowgate.command.TFBCommand;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 import net.md_5.bungee.api.config.ServerInfo;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.io.File;
 import java.io.InputStream;
@@ -50,6 +51,8 @@ public final class FlowGate extends Plugin {
     private final Set<UUID> searchingPlayers =
             ConcurrentHashMap.newKeySet();
 
+    private final Map<String, String> slashServers = new ConcurrentHashMap<String, String>();
+
     // ==================================================
     // ENABLE
     // ==================================================
@@ -77,7 +80,10 @@ public final class FlowGate extends Plugin {
         }
 
         // listeners
+        getProxy().registerChannel("BungeeCord");
         getProxy().getPluginManager().registerListener(this, new FallbackListener(this));
+        getProxy().getPluginManager().registerListener(this, new ServerConnectBlockerListener(this));
+        getProxy().getPluginManager().registerListener(this, new PluginMessageListener());
         router = new LimboRouterListener(this);
         getProxy().getPluginManager().registerListener(this, router);
         getProxy().getPluginManager().registerListener(this, new MotdListener(this));
@@ -163,7 +169,6 @@ public final class FlowGate extends Plugin {
                         }
 
                         router.attemptRoute(player);
-                        sendMessage(player, "routing.searching");
                     }
 
                 },
@@ -177,32 +182,6 @@ public final class FlowGate extends Plugin {
     // HUB COMMANDS
     // ==================================================
 
-    private void registerHubCommands() {
-
-        for (Command cmd : registeredHubCommands) {
-            getProxy().getPluginManager().unregisterCommand(cmd);
-        }
-        registeredHubCommands.clear();
-
-        if (!config.contains("hub-commands")) return;
-
-        List<String> hubCommands = config.getStringList("hub-commands");
-
-        if (hubCommands.size() > 3) {
-            getLogger().severe("§cERROR: Max 3 hub-commands allowed!");
-            getLogger().severe("§cExtra entries are IGNORED until removed.");
-        }
-
-        for (int i = 0; i < Math.min(3, hubCommands.size()); i++) {
-            String cmd = hubCommands.get(i);
-
-            Command command = new HubCommand(cmd, this);
-            getProxy().getPluginManager().registerCommand(this, command);
-            registeredHubCommands.add(command);
-
-            debug("Registered hub command: /" + cmd);
-        }
-    }
 
     // ==================================================
     // LOADERS
@@ -342,16 +321,26 @@ public final class FlowGate extends Plugin {
 
     private void registerSlashServers() {
 
-        for (Command cmd : registeredSlashCommands) {
-            getProxy().getPluginManager().unregisterCommand(cmd);
-        }
+        getProxy().getPluginManager().unregisterCommands(this);
         registeredSlashCommands.clear();
+        registeredHubCommands.clear();
+        slashServers.clear();
+
+        // Re-register static commands
+        getProxy().getPluginManager().registerCommand(this, new TFBCommand());
+
+        // Re-register hub commands
+        registerHubCommandsInternal();
 
         if (!config.contains("slash-servers")) return;
 
         for (String cmdName : config.getSection("slash-servers").getKeys()) {
 
             String target = config.getString("slash-servers." + cmdName);
+
+            if (cmdName == null || cmdName.isEmpty() || target == null || target.isEmpty()) {
+                continue;
+            }
 
             if (ProxyServer.getInstance().getServerInfo(target) == null) {
                 getLogger().severe(
@@ -362,11 +351,56 @@ public final class FlowGate extends Plugin {
                 continue;
             }
 
-            Command cmd = new SlashServerCommand(cmdName, target);
+            slashServers.put(cmdName, target);
+
+            Command cmd = new Command(cmdName) {
+                @Override
+                public void execute(net.md_5.bungee.api.CommandSender sender, String[] args) {
+                    if (!(sender instanceof ProxiedPlayer)) return;
+                    ProxiedPlayer player = (ProxiedPlayer) sender;
+                    ServerInfo server = ProxyServer.getInstance().getServerInfo(target);
+                    if (server == null) return;
+                    player.connect(server);
+                }
+            };
             getProxy().getPluginManager().registerCommand(this, cmd);
             registeredSlashCommands.add(cmd);
 
             debug("Registered /" + cmdName + " → " + target);
+        }
+    }
+
+    private void registerHubCommands() {
+        // This is now just a wrapper or we can keep it as is if it doesn't conflict
+        // But since registerSlashServers calls registerHubCommandsInternal, 
+        // we should probably avoid infinite recursion if we are not careful.
+        registerHubCommandsInternal();
+    }
+
+    private void registerHubCommandsInternal() {
+
+        for (Command cmd : registeredHubCommands) {
+            getProxy().getPluginManager().unregisterCommand(cmd);
+        }
+        registeredHubCommands.clear();
+
+        if (!config.contains("hub-commands")) return;
+
+        List<String> hubCommands = config.getStringList("hub-commands");
+
+        if (hubCommands.size() > 3) {
+            getLogger().severe("§cERROR: Max 3 hub-commands allowed!");
+            getLogger().severe("§cExtra entries are IGNORED until removed.");
+        }
+
+        for (int i = 0; i < Math.min(3, hubCommands.size()); i++) {
+            String cmd = hubCommands.get(i);
+
+            Command command = new HubCommand(cmd, this);
+            getProxy().getPluginManager().registerCommand(this, command);
+            registeredHubCommands.add(command);
+
+            debug("Registered hub command: /" + cmd);
         }
     }
 
@@ -583,7 +617,7 @@ public final class FlowGate extends Plugin {
         return true;
     }
 
-    protected void sendMessage(ProxiedPlayer player, String path) {
+    public void sendMessage(ProxiedPlayer player, String path) {
         if (messages == null) return;
 
         String prefix = messages.getString("prefix", "");

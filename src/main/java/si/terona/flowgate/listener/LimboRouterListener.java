@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 public final class LimboRouterListener implements Listener {
@@ -21,6 +22,7 @@ public final class LimboRouterListener implements Listener {
 
     private final Set<UUID> connecting = ConcurrentHashMap.newKeySet();
     private final ConcurrentHashMap<UUID, Integer> cursor = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, Long> lastAttempt = new ConcurrentHashMap<>();
 
     public LimboRouterListener(FlowGate plugin) {
         this.plugin = plugin;
@@ -41,6 +43,7 @@ public final class LimboRouterListener implements Listener {
         if (!plugin.getSearchingPlayers().add(uuid)) return;
 
         TitleManager.start(player);
+        plugin.sendFallbackSearching(player);
     }
 
     // ==================================================
@@ -71,12 +74,29 @@ public final class LimboRouterListener implements Listener {
             return;
         }
 
+        // Throttle: Add random delay between 100-500ms to prevent flooding
+        long currentTime = System.currentTimeMillis();
+        long lastTime = lastAttempt.getOrDefault(uuid, 0L);
+        long timeSinceLastAttempt = currentTime - lastTime;
+
+        // Add staggered delay based on player count to prevent mass connections
+        int playersOnFallback = (int) ProxyServer.getInstance().getPlayers().stream()
+                .filter(p -> plugin.isOnFallback(p))
+                .count();
+
+        long baseDelay = 100 + ThreadLocalRandom.current().nextLong(400);
+        long staggerDelay = (playersOnFallback > 10) ? ThreadLocalRandom.current().nextLong(200, 1000) : 0;
+        long totalDelay = baseDelay + staggerDelay;
+
         hub.ping((result, error) -> {
 
             if (error != null || result == null) {
                 connecting.remove(uuid);
                 return;
             }
+
+            // Show "Hub found!" message
+            plugin.sendMessage(player, "routing.found");
 
             ProxyServer.getInstance().getScheduler().schedule(
                     plugin,
@@ -86,17 +106,20 @@ public final class LimboRouterListener implements Listener {
                             return;
                         }
 
+                        lastAttempt.put(uuid, System.currentTimeMillis());
+
                         player.connect(hub, (success, err) -> {
                             connecting.remove(uuid);
 
                             if (success) {
                                 cursor.remove(uuid);
+                                lastAttempt.remove(uuid);
                                 plugin.getSearchingPlayers().remove(uuid);
                                 TitleManager.clear(player);
                             }
                         });
                     },
-                    0,
+                    totalDelay,
                     TimeUnit.MILLISECONDS
             );
         });
@@ -109,5 +132,6 @@ public final class LimboRouterListener implements Listener {
     public void clear(UUID uuid) {
         connecting.remove(uuid);
         cursor.remove(uuid);
+        lastAttempt.remove(uuid);
     }
 }

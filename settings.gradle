@@ -1,0 +1,10 @@
+// Configure plugin repositories for resolving the toolchain download plugin
+// and related plugins. This ensures Gradle can fetch the plugin from the
+// Gradle Plugin Portal or Maven Central.
+// If you need Gradle to auto-download JDK toolchains, add the
+// 'org.gradle.toolchains.default-toolchain-download-repository' plugin
+// here and set org.gradle.java.installations.auto-download=true in
+// gradle.properties. By default we keep auto-download disabled so the
+// project uses the local JDK / JAVA_HOME to avoid additional plugin
+// resolution steps during build.
+rootProject.name = 'FlowGate-Lite'

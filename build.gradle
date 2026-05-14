@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+}
+
+group = 'si.terona'
+version = '1.0.5'
+
+// Use source/target compatibility set to Java 17. We avoid the Gradle
+// auto-provisioning toolchain here to prevent build failures when the
+// default toolchain download repository plugin isn't available in the IDE.
+// The build will use the local JDK (JAVA_HOME / org.gradle.java.home).
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+repositories {
+    mavenCentral()
+
+    maven {
+        name = "md5-repo"
+        url = "https://repo.md-5.net/content/repositories/releases/"
+    }
+
+    maven {
+        name = "sonatype"
+        url = "https://oss.sonatype.org/content/repositories/snapshots/"
+    }
+
+    maven {
+        name = "minecraft-libraries"
+        url = "https://libraries.minecraft.net/"
+    }
+}
+
+dependencies {
+    compileOnly 'net.md-5:bungeecord-api:1.21-R0.4'
+}
+
+jar {
+    archiveBaseName.set("FlowGate-Lite")
+    archiveVersion.set(project.version.toString())
+}
